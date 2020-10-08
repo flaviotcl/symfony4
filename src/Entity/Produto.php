@@ -30,6 +30,31 @@ class Produto
      */
     private $preco;
 
+    /**
+     * @ORM\Column(type="text")
+     * @Assert\NotBlank()
+     */
+
+    private $descricao;
+
+    /**
+     * @return mixed
+     */
+    public function getDescricao()
+    {
+        return $this->descricao;
+    }
+
+    /**
+     * @param string $descricao
+     * @return Produto
+     */
+    public function setDescricao($descricao)
+    {
+        $this->descricao = $descricao;
+        return $this;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -58,4 +83,7 @@ class Produto
 
         return $this;
     }
+
+
+
 }

@@ -33,7 +33,7 @@ class HelloController extends AbstractController
     public function msg()
     {
         return $this->render("hello/msg.html.twig",
-                             ["mensagem"=>"Olá SON"]
+                             ["mensagem"=>"Olá School of Net"]
                             );
     }
 
