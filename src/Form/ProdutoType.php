@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Produto;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -47,7 +48,7 @@ class ProdutoType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            // Configure your form options here
+            'data_class' => Produto::class,
         ]);
     }
 }

@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 class ProdutoController extends AbstractController
 {
     /**
-     * @Route("/produto", name="produto")
+     * @Route("/produto/listar_produto", name="listar_produto")
      */
     public function index()
     {
@@ -27,16 +27,30 @@ class ProdutoController extends AbstractController
 
     /**
      * @param Request $request
-     * @Route("/produto/cadastrar", name="cadastrar_produto")
+     * @Route("/produto/cadastrar", name="cadastrar_produto", methods={"GET","POST"})
      */
-    public function create( Request $request)
+    public function create(Request $request): Response
     {
         $produto = new Produto();
-
         $form = $this->createForm(ProdutoType::class, $produto);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid())
+        {
+
+            $em = $this->getDoctrine()->getManager();
+
+            $em->persist($produto);
+            $em->flush();
+
+            $this->get('session')->getFlashBag()->set('success','Produto foi salvo com sucesso !');
+
+            return $this->redirectToRoute('listar_produto');
+        }
 
         return $this->render("produto/create.html.twig",
-            ['form' => $form->createView()]
+            ['form' => $form->createView(),
+                'produto'=> $produto]
             );
     }
 }
