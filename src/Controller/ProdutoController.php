@@ -53,4 +53,49 @@ class ProdutoController extends AbstractController
                 'produto'=> $produto]
             );
     }
+
+    /**
+     * @param Request $request
+     * @return Response
+     * @Route("produto/editar/{id}", name="editar_produto")
+     */
+    public function update(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $produto = $em->getRepository(Produto::class)->find($id);
+
+        $form = $this->createForm(ProdutoType::class, $produto);
+        $form->handleRequest($request);
+
+        if( $form->isSubmitted() && $form->isValid())
+        {
+            $em->persist($produto);
+            $em->flush();
+
+            $this->get("session")->getFlashBag()->set("success","O Produto " .$produto->getNome() . " foi alterado com sucesso");
+            return $this->redirectToRoute("listar_produto");
+        }
+
+        return $this->render("produto/update.html.twig", [
+            'produto' => $produto,
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
+     *
+     * @Route("produto/visualizar/{id}", name="visualizar_produto")
+     */
+    public function view(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $produto = $em->getRepository(Produto::class)->find($id);
+
+        return $this->render("produto/view.html.twig", [
+            'produto' => $produto
+        ]);
+    }
 }
