@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Produto;
 use App\Form\ProdutoType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,6 +14,7 @@ class ProdutoController extends AbstractController
 {
     /**
      * @Route("/produto/listar_produto", name="listar_produto")
+     * @Template("produto/index.html.twig")
      */
     public function index()
     {
@@ -20,14 +22,15 @@ class ProdutoController extends AbstractController
 
             $produtos  =  $em->getRepository(Produto::class)->findAll();
 
-            return $this->render("produto/index.html.twig",[
+            return [
                 'produtos' => $produtos
-    ]);
+    ];
     }
 
     /**
      * @param Request $request
      * @Route("/produto/cadastrar", name="cadastrar_produto", methods={"GET","POST"})
+     * @Template("produto/create.html.twig")
      */
     public function create(Request $request): Response
     {
@@ -43,7 +46,8 @@ class ProdutoController extends AbstractController
             $em->persist($produto);
             $em->flush();
 
-            $this->get('session')->getFlashBag()->set('success','Produto foi salvo com sucesso !');
+            //$this->get('session')->getFlashBag()->set('success','Produto foi salvo com sucesso !');
+            $this->addFlash("success", "Produto Cadastrado !");
 
             return $this->redirectToRoute('listar_produto');
         }
@@ -58,6 +62,7 @@ class ProdutoController extends AbstractController
      * @param Request $request
      * @return Response
      * @Route("produto/editar/{id}", name="editar_produto")
+     * @Template("produto/update.html.twig")
      */
     public function update(Request $request, $id)
     {
@@ -77,10 +82,10 @@ class ProdutoController extends AbstractController
             return $this->redirectToRoute("listar_produto");
         }
 
-        return $this->render("produto/update.html.twig", [
+        return  [
             'produto' => $produto,
             'form' => $form->createView()
-        ]);
+        ];
     }
 
     /**
@@ -88,15 +93,16 @@ class ProdutoController extends AbstractController
      * @param $id
      *
      * @Route("produto/visualizar/{id}", name="visualizar_produto")
+     * @Template("produto/view.html.twig")
      */
     public function view(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
         $produto = $em->getRepository(Produto::class)->find($id);
 
-        return $this->render("produto/view.html.twig", [
+        return  [
             'produto' => $produto
-        ]);
+        ];
     }
 
     /**
